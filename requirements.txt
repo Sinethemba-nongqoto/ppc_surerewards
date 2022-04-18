@@ -8,4 +8,3 @@ pytz==2022.1
 statsmodels==0.13.2
 streamlit==1.8.1
 streamlit_metrics==0.1.0
-PIL=1.1.7
