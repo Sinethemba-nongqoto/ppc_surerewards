@@ -47,6 +47,11 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
+
+## Writing the latest time update
+from datetime import datetime
+import pytz
+
 # Vectorizer
 news_vectorizer = open("resources/tfidfvect.pkl","rb")
 #tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl file
@@ -71,6 +76,7 @@ def main():
 
 
 	# Loading Heading Images 
+
 
 	## Function that automatically load images
 	from PIL import Image
@@ -108,21 +114,15 @@ def main():
 
 
 
-	## Writing the latest time update
-	from datetime import datetime
-	import pytz
 
-	SA_time = pytz.timezone('Africa/Johannesburg') 
-	datetime_SA = datetime.now(SA_time)
 
-	metric("Latest Time Update", datetime_SA.strftime('%Y-%m-%d %H:%M %p'))
 
 	#st.subheader("Climate change tweet classification")
 
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
 	
-	options = ["Prediction","Prediction Page"]
+	options = ["Surerewards Sights","Prediction Page"]
 	selection = st.sidebar.selectbox("Select Page", options)
 
 
@@ -163,11 +163,28 @@ def main():
 		if st.checkbox('Show How the works'):
 		
 			st.info("The model trained is a Recurrent Neural Network model,  LSTM ( Long Short Term Memory) . This model is a Time Series Model that use historical data for forecasting/ predicting the number of bags in the upcoming week")			
+		if st.button("Model Information"):
+			# Transforming user input with vectorizer
+			#vect_text = tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			#predictor = joblib.load(open(os.path.join("resources/Logistic_regression.pkl"),"rb"))
+			#prediction = predictor.predict(vect_text)
 
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("The prediction model is trained on live data using pipelines for prediction accuracy")
 	# Building out the predication page
-	if selection == "Prediction":
-		st.markdown("<h1 style='text-align: center; color: red;'>Prediction Page</h1>", unsafe_allow_html=True)
-		st.markdown("<h3 style='text-align: center; color: black;'>This Page focuses on predicting number of bag and setting dynamic daily targets</h3>", unsafe_allow_html=True)
+	if selection == "Surerewards Sights":
+
+		st.info("The following visuals are based on lived data from the surerewards platform (They change with time)")
+
+		## Show the latest Update Time
+		SA_time = pytz.timezone('Africa/Johannesburg') 
+		datetime_SA = datetime.now(SA_time)
+		metric("Latest Time Update", datetime_SA.strftime('%Y-%m-%d %H:%M %p'))
+		
 		
 	
 
@@ -186,6 +203,8 @@ def main():
 		
 		num_bags["delta"] = (num_bags["number_of_bags"].pct_change()).fillna(0)
 
+		## Number Of Bags Visual
+		st.markdown("<h4 style='text-align: center; color: black;'>The visual below shows the number of bags bought by surerewards customers.</h4>", unsafe_allow_html=True)
 		st.altair_chart(line_graph(num_bags,"date","number_of_bags"), use_container_width=True)
 		
 		## Grouping By Weekday
@@ -194,12 +213,22 @@ def main():
 
 
 			
-
+        ## Number of registration Visual
+		st.markdown("<h4 style='text-align: center; color: black;'>The visual below shows the number of customer registration on the surerewards platform.</h4>", unsafe_allow_html=True)
+		
 		num_reg["delta"] = (num_reg["num_of_reg"].pct_change()).fillna(0)
 		st.altair_chart(line_graph(num_reg ,"date","num_of_reg").interactive(), use_container_width=True)
 
+		## Number of registration receipts upload
+		st.markdown("<h4 style='text-align: center; color: black;'>The visual below shows the number of receipts upload on the surerewards platform.</h4>", unsafe_allow_html=True)
+		
 		num_receipts["delta"] = (num_receipts["no_of_receipts_upload"].pct_change()).fillna(0)
 		st.altair_chart(line_graph(num_receipts ,"date","no_of_receipts_upload").interactive(), use_container_width=True)
+       
+	   
+	   
+		## Numbers of bags by weekday
+
 
 		mean_weekday =num_bags.groupby(['weekday']).mean()
 		sum_weekday =num_bags.groupby(['weekday']).sum()
@@ -219,7 +248,9 @@ def main():
 
 
 
-		# Plot double bars
+ 		## Number of registration Visual
+		st.markdown("<h5 style='text-align: center; color: black;'>The visual below shows the average and total number of bags bought buy surerewards customer by weekday.</h5>", unsafe_allow_html=True)
+		
 
 		fig, ax = plt.subplots(figsize=(10,5))
 		plt.tight_layout()
@@ -267,8 +298,19 @@ def main():
 		#chart = (alt.Chart(sorted_week_bags).mark_bar().encode(alt.X("date"),alt.Y("Average_no_bags"),alt.Color("date:O"),alt.Tooltip(["date"]),).interactive())
 		#st.altair_chart(chart)
 
+		## Space 
+
+		st.text("")
+		st.text("")
+		st.text("")
+
+		## Space
+
+		import warnings
+		warnings.filterwarnings("ignore")
 
 		
+		st.markdown("<h2 style='text-align: center; color: black;'>Critical Key Performance Indicators ( KPIs ).</h2>", unsafe_allow_html=True)
 
 
 		st.markdown("<h3 style='text-align: center; color: red;'>Surerewards Customers</h3>", unsafe_allow_html=True)
@@ -278,34 +320,16 @@ def main():
 		metric_row( {"Total No of Receipts Upload": num_receipts['no_of_receipts_upload'].sum(),"Total No of Valid Receipts": num_valid_receipts["no_of_valid_receipts"].sum(),"Total No of Invalid Receipts":num_invalid_receipts["no_of_invalid_receipts"].sum()})
 
 		st.markdown("<h3 style='text-align: center; color: red;'>User Engagement</h3>", unsafe_allow_html=True)
-		metric_row( {"Total No of Users With Recipets Upload": num_user_r_upload['no_of_receipts_upload'].sum(),"Total No of Users With Valid Receipts": num_user_valid_receipts["no_of_users_valid_receipts"].sum(),"Total No of Users With Invalid Receipts":num_user_invalid_receipts["no_of_users_invalid_receipts"].sum()})
+		metric( {"Total No of Users With Recipets Upload": num_user_r_upload['no_of_receipts_upload'].sum(),"Total No of Users With Valid Receipts": num_user_valid_receipts["no_of_users_valid_receipts"].sum(),"Total No of Users With Invalid Receipts":num_user_invalid_receipts["no_of_users_invalid_receipts"].sum()})
+		warnings.filterwarnings("ignore")
 
-
-		col1, col2, col3 = st.columns(3)
-		col1.metric("Temperature", "70 °F", "1.2 °F")
-		col2.metric("Wind", "9 mph", "-8%")
-		col3.metric("Humidity", "86%", "4%")
-
-		
-		st.info("Prediction with ML Models")
-		# Creating a text box for user input
-		tweet_text = st.text_area("Enter Text","Type Here")
+		#col1, col2, col3 = st.columns(3)
+		#col1.metric("Temperature","70 °F",  "1.2 °F")
+		#col2.metric("Wind", "9 mph", "-8%")
+		#col3.metric("Humidity", "86%", "4%")
 
 
 
-
-		if st.button("Model Information"):
-			# Transforming user input with vectorizer
-			#vect_text = tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			#predictor = joblib.load(open(os.path.join("resources/Logistic_regression.pkl"),"rb"))
-			#prediction = predictor.predict(vect_text)
-
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("The prediction model is trained on live data using pipelines for prediction accuracy")
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
