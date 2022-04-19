@@ -80,6 +80,12 @@ def main():
 
 	## Function that automatically load images
 	from PIL import Image
+
+
+
+	
+		
+	st.sidebar.image("resources\imgs\surerewards.png", use_column_width=True)
 	
 	def load_image(image_file):
 		img = Image.open(image_file)
@@ -175,7 +181,6 @@ def main():
 	
 	# Building out the predication page
 	if selection == "Surerewards Insights":
-		
 		st.markdown("<h1 style='text-align: center; color: red;'>PPC130 Surerewards Insights</h1>", unsafe_allow_html=True)
 
 		st.info("The following visuals are based on lived data from the surerewards platform (They change with time)")
