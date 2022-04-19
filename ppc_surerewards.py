@@ -110,7 +110,7 @@ def main():
 	
 	
 	
-	st.markdown("<h1 style='text-align: center; color: red;'>PPC130 Surerewards Insights</h1>", unsafe_allow_html=True)
+
 
 
 
@@ -122,7 +122,7 @@ def main():
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
 	
-	options = ["Surerewards Sights","Prediction Page"]
+	options = ["Surerewards Insights","Prediction Page"]
 	selection = st.sidebar.selectbox("Select Page", options)
 
 
@@ -131,6 +131,8 @@ def main():
 
 	# Building out the "Information" page
 	if selection == "Prediction Page":
+
+		
 		
 		st.markdown("<h3 style='text-align: center; color: black;'>This Page focuses on predicting number of bag and setting dynamic daily targets</h3>", unsafe_allow_html=True)
 
@@ -163,20 +165,18 @@ def main():
 		if st.checkbox('Show How the works'):
 		
 			st.info("The model trained is a Recurrent Neural Network model,  LSTM ( Long Short Term Memory) . This model is a Time Series Model that use historical data for forecasting/ predicting the number of bags in the upcoming week")			
-		if st.button("Model Information"):
-			# Transforming user input with vectorizer
-			#vect_text = tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			#predictor = joblib.load(open(os.path.join("resources/Logistic_regression.pkl"),"rb"))
-			#prediction = predictor.predict(vect_text)
+		
+		if st.button("Train Model"):
 
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
+
+
 			st.success("The prediction model is trained on live data using pipelines for prediction accuracy")
+	
+	
 	# Building out the predication page
-	if selection == "Surerewards Sights":
+	if selection == "Surerewards Insights":
+		
+		st.markdown("<h1 style='text-align: center; color: red;'>PPC130 Surerewards Insights</h1>", unsafe_allow_html=True)
 
 		st.info("The following visuals are based on lived data from the surerewards platform (They change with time)")
 
@@ -189,7 +189,8 @@ def main():
 	
 
 		# Loaading Datasets
-		num_bags =pd.read_sql_query("SELECT cast(r.createdAt as date) as date, sum(ppc_surebuild + ppc_surecast + ppc_surecem + ppc_suretech + ppc_surewall) as number_of_bags from users as u inner join receiptdata as r on u.id =r.agent_id where action = 'approved' and cast(r.createdAt as date) >= '2022-02-15'  group by Date",conn)
+		num_bags =pd.read_sql_query("select cast(r.createdAt as date) as date,sum(ppc_surebuild + ppc_surecast + ppc_surecem + ppc_suretech + ppc_surewall) as number_of_bags from receipts as r inner join receiptdata as rdata on r.id =rdata.receipt_id where r.status in ('approved','Limit reached.') and cast(r.createdAt as date)  between '2022-02-15' and current_date() group by date" ,conn)
+		
 		num_reg =pd.read_sql_query(" Select count(*) as num_of_reg,cast(createdAt as date) as date  from users where cast(createdAt as date) >= '2022-02-15'  group by date order by date",conn)
 		num_promo_reg = pd.read_sql_query("Select cast(createdAt as date) as date,count(*) as No_Promocode from users where code = 'PPC130' and cast(createdAt as date)>='2022-02-15'  group by date order by Date",conn)
 		num_receipts=pd.read_sql_query("SELECT count(*) as no_of_receipts_upload ,cast(receipts.updatedAt as date) as date from users inner join receipts on users.id=receipts.user_id where status  in ('Duplicate receipts','outdated Receipt','Receipt cut off.','Receipt not relevant', 'Receipt not visible','Approved','Limit reached.') and cast(receipts.updatedAt as date) >='2022-02-15'  group by date",conn)
@@ -310,17 +311,17 @@ def main():
 		warnings.filterwarnings("ignore")
 
 		
-		st.markdown("<h2 style='text-align: center; color: black;'>Critical Key Performance Indicators ( KPIs ).</h2>", unsafe_allow_html=True)
+		st.markdown("<h2 style='text-align: center; color: black;'>Key Performance Indicators ( KPIs ).</h2>", unsafe_allow_html=True)
 
 
 		st.markdown("<h3 style='text-align: center; color: red;'>Surerewards Customers</h3>", unsafe_allow_html=True)
 		metric_row({ " Total No Of Surerewards Customers ": num_reg['num_of_reg'].sum(),"Customers With PPC130 Promo Code": num_promo_reg['No_Promocode'].sum(),"Total No Of Bags": round(num_bags["number_of_bags"].sum()) })
 
-		st.markdown("<h3 style='text-align: center; color: red;'>Receipts Upload</h3>", unsafe_allow_html=True)
+		st.markdown("<h3 style='text-align: center; color: red;'>Customer Receipts Upload</h3>", unsafe_allow_html=True)
 		metric_row( {"Total No of Receipts Upload": num_receipts['no_of_receipts_upload'].sum(),"Total No of Valid Receipts": num_valid_receipts["no_of_valid_receipts"].sum(),"Total No of Invalid Receipts":num_invalid_receipts["no_of_invalid_receipts"].sum()})
 
-		st.markdown("<h3 style='text-align: center; color: red;'>User Engagement</h3>", unsafe_allow_html=True)
-		metric( {"Total No of Users With Recipets Upload": num_user_r_upload['no_of_receipts_upload'].sum(),"Total No of Users With Valid Receipts": num_user_valid_receipts["no_of_users_valid_receipts"].sum(),"Total No of Users With Invalid Receipts":num_user_invalid_receipts["no_of_users_invalid_receipts"].sum()})
+		st.markdown("<h3 style='text-align: center; color: red;'>Customer Engagement</h3>", unsafe_allow_html=True)
+		metric_row( {"Total No of Users With Recipets Upload": num_user_r_upload['no_of_receipts_upload'].sum(),"Total No of Users With Valid Receipts": num_user_valid_receipts["no_of_users_valid_receipts"].sum(),"Total No of Users With Invalid Receipts":num_user_invalid_receipts["no_of_users_invalid_receipts"].sum()})
 		warnings.filterwarnings("ignore")
 
 		#col1, col2, col3 = st.columns(3)
