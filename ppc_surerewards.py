@@ -85,7 +85,7 @@ def main():
 
 	
 		
-	st.sidebar.image("resources\imgs\surerewards.png", use_column_width=True)
+	st.sidebar.image("resources/imgs/surerewards.png", use_column_width=True)
 	
 	def load_image(image_file):
 		img = Image.open(image_file)
