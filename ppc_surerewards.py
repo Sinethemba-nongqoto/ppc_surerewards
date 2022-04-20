@@ -48,6 +48,8 @@ import matplotlib as mpl
 import numpy as np
 import datetime
 
+import sklearn
+
 ## Writing the latest time update
 from datetime import datetime
 import pytz
