@@ -46,7 +46,7 @@ warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
-
+import datetime
 
 ## Writing the latest time update
 from datetime import datetime
@@ -258,7 +258,7 @@ def main():
 			last_day = train.index[len(list(train['number_of_bags']))-1]
 			last_day=last_day.date()
 
-			import datetime
+
 			forward_days=[last_day+datetime.timedelta(days=1)]
 			for i in range(6):    
 				forward_days.append(forward_days[len(forward_days)-1]+datetime.timedelta(days=1))
