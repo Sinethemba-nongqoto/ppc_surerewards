@@ -48,7 +48,7 @@ import matplotlib as mpl
 import numpy as np
 import datetime
 
-import sklearn
+
 
 ## Writing the latest time update
 from datetime import datetime
@@ -278,7 +278,7 @@ def main():
 				
 			## Show dataframe prediction page
 			st.markdown("<h5 style='text-align: center; color: black;'>Predicted Values </h5>", unsafe_allow_html=True)
-			st.dataframe(df_pred)
+			#st.dataframe(df_pred)
 
 			## Insert join prediction and train dataframe
 			df_pred.loc[pd.to_datetime(train.index[len(train)-1], errors='coerce')] = round(train['number_of_bags'][len(train)-1])
@@ -325,6 +325,8 @@ def main():
 		st.info("The following visuals are based on lived data from the surerewards platform (They change with time)")
 
 		## Show the latest Update Time
+		from datetime import datetime
+
 		SA_time = pytz.timezone('Africa/Johannesburg') 
 		datetime_SA = datetime.now(SA_time)
 		metric("Latest Time Update", datetime_SA.strftime('%Y-%m-%d %H:%M %p'))
