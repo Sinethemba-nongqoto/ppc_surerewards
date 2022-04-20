@@ -213,7 +213,7 @@ def main():
 
 
 			# fit model
-			model.fit(generator,epochs=200)
+			model.fit(generator,epochs=50)
 
 			st.markdown("<h5 style='text-align: center; color: black;'>Model Convergence</h5>", unsafe_allow_html=True)
 			fig, ax = plt.subplots(figsize=(10,5))
