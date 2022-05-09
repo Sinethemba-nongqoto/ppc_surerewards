@@ -148,7 +148,7 @@ def main():
 
 
 
-
+		# sql query for number of bags
 		num_bags =pd.read_sql_query("select cast(receiptdata.updatedAt as date) as date,sum(ppc_surebuild + ppc_surecast + ppc_surecem + ppc_suretech + ppc_surewall + ppc_plaster + ppc_motor + ppc_sureroad) as number_of_bags from users join receipts on users.id= receipts.user_id join receiptdata on receipts.id =receiptdata.receipt_id where action IN ('approved', 'Limit reached.') and cast(receiptdata.updatedAt as date) = '2022-05-04' and users.code = 'PPC130' group by date desc" ,conn)
 		
 		content = {'date': list(pd.to_datetime(num_bags['date'], errors='coerce')),'number_of_bags': list(num_bags['number_of_bags'])}
